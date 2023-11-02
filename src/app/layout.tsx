@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
+import { ClerkProvider } from "@clerk/nextjs";
 
 import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Meran",
-  description: "A web application for Freelancers",
+  description: "A web application for Freelancers.",
 };
 
 export default function RootLayout({
@@ -14,7 +15,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <ClerkProvider appearance={{ elements: { footer: "hidden" } }}>
+        <body className="">{children}</body>
+      </ClerkProvider>
     </html>
   );
 }
