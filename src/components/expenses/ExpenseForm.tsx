@@ -1,25 +1,34 @@
+"use client";
+
+import { useForm } from "react-hook-form";
+
+type FormValues = {
+  category: string;
+  day: string;
+  amount: number;
+  hasTva: boolean;
+  description: string;
+  receiptImageURL: string;
+  tvaRate: number;
+  tvaAmount: number;
+};
+
 export default function ExpenseForm() {
-  const expenseFields = {
-    user: "Référence de l'utilisateur",
-    category: "Référence de la catégorie de dépenses",
-    date: "Date de la dépense",
-    amount: "Montant de la dépense",
-    description: "Description de la dépense",
-    receiptImageURL: "URL de l'image du reçu (optionnel)",
-    tvaRate: "Taux de TVA applicable",
-    tvaAmount: "Montant de la TVA",
-    createdAt: "Date de création",
-    updatedAt: "Date de mise à jour",
+  const form = useForm<FormValues>();
+  const { register, handleSubmit } = form;
+
+  const onSubmit = (data: FormValues) => {
+    console.log("=== Form submitted", data);
   };
 
   return (
     <div>
       <h2 className="text-xl font-semibold">Ajouter une dépense</h2>
 
-      <form className="">
+      <form onSubmit={handleSubmit(onSubmit)} noValidate className="">
         <div className="flex flex-col space-y-2">
           <label htmlFor="category">Category</label>
-          <select id="category" name="category" className="">
+          <select id="category" {...register("category")} className="">
             <option value="">-- Choisir une catégorie --</option>
             <option value="1">1</option>
             <option value="2">2</option>
@@ -31,7 +40,7 @@ export default function ExpenseForm() {
 
         <div className="flex flex-col space-y-2">
           <label htmlFor="day">Day</label>
-          <input type="date" id="day" name="day" className="" />
+          <input type="date" id="day" {...register("day")} className="" />
         </div>
 
         <div className="flex flex-col space-y-2">
@@ -39,7 +48,7 @@ export default function ExpenseForm() {
           <input
             type="number"
             id="amount"
-            name="amount"
+            {...register("amount")}
             className="border border-gray-300 p-2 rounded-md"
           />
         </div>
@@ -49,7 +58,7 @@ export default function ExpenseForm() {
           <input
             type="checkbox"
             id="hasTva"
-            name="hasTva"
+            {...register("hasTva")}
             className="border border-gray-300 p-2 rounded-md"
           />
         </div>
@@ -59,7 +68,7 @@ export default function ExpenseForm() {
           <input
             type="text"
             id="description"
-            name="description"
+            {...register("description")}
             className="border border-gray-300 p-2 rounded-md"
           />
         </div>
@@ -69,7 +78,7 @@ export default function ExpenseForm() {
           <input
             type="file"
             id="receiptImageURL"
-            name="receiptImageURL"
+            {...register("receiptImageURL")}
             className="border border-gray-300 p-2 rounded-md"
           />
         </div>
@@ -79,7 +88,7 @@ export default function ExpenseForm() {
           <input
             type="number"
             id="tvaRate"
-            name="tvaRate"
+            {...register("tvaRate")}
             className="border border-gray-300 p-2 rounded-md"
           />
         </div>
@@ -89,7 +98,7 @@ export default function ExpenseForm() {
           <input
             type="number"
             id="tvaAmount"
-            name="tvaAmount"
+            {...register("tvaAmount")}
             className="border border-gray-300 p-2 rounded-md"
           />
         </div>

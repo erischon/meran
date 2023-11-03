@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 
 import { Montserrat } from "next/font/google";
@@ -20,11 +19,6 @@ const routes = [
     label: "Expenses",
     icon: Coins,
     href: "/expenses",
-  },
-  {
-    label: "Settings",
-    icon: Settings,
-    href: "/dashboard",
   },
 ];
 
