@@ -1,5 +1,6 @@
 "use client";
 
+import { use, useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 type FormValues = {
@@ -17,6 +18,10 @@ export default function ExpenseForm() {
   const form = useForm<FormValues>();
   const { register, handleSubmit, formState, setValue } = form;
   const { errors } = formState;
+
+  useEffect(() => {
+    setValue("hasTva", false);
+  }, []);
 
   const onSubmit = (data: FormValues) => {
     console.log("=== Form submitted", data);
@@ -79,7 +84,7 @@ export default function ExpenseForm() {
         </div>
 
         <div className="flex items-center space-x-2 mb-2">
-          <label htmlFor="hasTva">Vous comptez la TVA ?</label>
+          <label htmlFor="hasTva">Vous déduisez la TVA ?</label>
           <input
             type="checkbox"
             id="hasTva"
