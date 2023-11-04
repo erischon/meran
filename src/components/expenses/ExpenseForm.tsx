@@ -1,7 +1,6 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import { DevTool } from "@hookform/devtools";
 
 type FormValues = {
   category: string;
@@ -16,7 +15,7 @@ type FormValues = {
 
 export default function ExpenseForm() {
   const form = useForm<FormValues>();
-  const { register, handleSubmit, formState, setValue, control } = form;
+  const { register, handleSubmit, formState, setValue } = form;
   const { errors } = formState;
 
   const onSubmit = (data: FormValues) => {
@@ -68,7 +67,7 @@ export default function ExpenseForm() {
         </div>
 
         <div className="flex flex-col space-y-2">
-          <label htmlFor="amount">Amount</label>
+          <label htmlFor="amount">Montant (ttc)</label>
           <input
             type="number"
             id="amount"
@@ -79,13 +78,52 @@ export default function ExpenseForm() {
           <p className="text-red-500 font-semibold">{errors.amount?.message}</p>
         </div>
 
-        <div className="flex flex-col space-y-2">
-          <label htmlFor="hasTva">hasTva</label>
+        <div className="flex items-center space-x-2 mb-2">
+          <label htmlFor="hasTva">Vous comptez la TVA ?</label>
           <input
             type="checkbox"
             id="hasTva"
             {...register("hasTva")}
             className="border border-gray-300 p-2 rounded-md"
+          />
+        </div>
+
+        <div
+          className={`${
+            form.watch("hasTva") === false ? "hidden" : "block"
+          } flex flex-col space-y-2`}
+        >
+          <label htmlFor="tvaRate">tvaRate</label>
+          <input
+            type="number"
+            id="tvaRate"
+            {...register("tvaRate", {
+              required:
+                form.watch("hasTva") === true
+                  ? "Quand il y a une TVA, le taux de TVA est requis."
+                  : "",
+              onChange: (e: any) => handleTvaRate(e),
+            })}
+            className="border border-gray-300 p-2 rounded-md"
+          />
+
+          <p className="text-red-500 font-semibold">
+            {errors.tvaRate?.message}
+          </p>
+        </div>
+
+        <div
+          className={`${
+            form.watch("hasTva") === false ? "hidden" : "block"
+          } flex flex-col space-y-2`}
+        >
+          <label htmlFor="tvaAmount">tvaAmount</label>
+          <input
+            type="number"
+            id="tvaAmount"
+            {...register("tvaAmount")}
+            className="border border-gray-300 p-2 rounded-md"
+            readOnly={true}
           />
         </div>
 
@@ -115,41 +153,8 @@ export default function ExpenseForm() {
           />
         </div>
 
-        <div className="flex flex-col space-y-2">
-          <label htmlFor="tvaRate">tvaRate</label>
-          <input
-            type="number"
-            id="tvaRate"
-            {...register("tvaRate", {
-              required:
-                form.watch("hasTva") === true
-                  ? "Quand il y a une TVA, le taux de TVA est requis."
-                  : "",
-              onChange: (e: any) => handleTvaRate(e),
-            })}
-            className="border border-gray-300 p-2 rounded-md"
-          />
-
-          <p className="text-red-500 font-semibold">
-            {errors.tvaRate?.message}
-          </p>
-        </div>
-
-        <div className="flex flex-col space-y-2">
-          <label htmlFor="tvaAmount">tvaAmount</label>
-          <input
-            type="number"
-            id="tvaAmount"
-            {...register("tvaAmount")}
-            className="border border-gray-300 p-2 rounded-md"
-            readOnly={true}
-          />
-        </div>
-
         <button>Submit</button>
       </form>
-
-      <DevTool control={control} />
     </div>
   );
 }
