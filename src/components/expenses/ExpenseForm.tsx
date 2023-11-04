@@ -1,6 +1,7 @@
 "use client";
 
 import { useForm } from "react-hook-form";
+import { DevTool } from "@hookform/devtools";
 
 type FormValues = {
   category: string;
@@ -15,10 +16,18 @@ type FormValues = {
 
 export default function ExpenseForm() {
   const form = useForm<FormValues>();
-  const { register, handleSubmit } = form;
+  const { register, handleSubmit, formState, setValue, control } = form;
+  const { errors } = formState;
 
   const onSubmit = (data: FormValues) => {
     console.log("=== Form submitted", data);
+  };
+
+  const handleTvaRate = (e: any) => {
+    setValue(
+      "tvaAmount",
+      form.watch("amount") - form.watch("amount") / (1 + e.target.value / 100)
+    );
   };
 
   return (
@@ -28,7 +37,11 @@ export default function ExpenseForm() {
       <form onSubmit={handleSubmit(onSubmit)} noValidate className="">
         <div className="flex flex-col space-y-2">
           <label htmlFor="category">Category</label>
-          <select id="category" {...register("category")} className="">
+          <select
+            id="category"
+            {...register("category", { required: "La catégorie est requise." })}
+            className=""
+          >
             <option value="">-- Choisir une catégorie --</option>
             <option value="1">1</option>
             <option value="2">2</option>
@@ -36,11 +49,22 @@ export default function ExpenseForm() {
             <option value="4">4</option>
             <option value="5">5</option>
           </select>
+
+          <p className="text-red-500 font-semibold">
+            {errors.category?.message}
+          </p>
         </div>
 
         <div className="flex flex-col space-y-2">
           <label htmlFor="day">Day</label>
-          <input type="date" id="day" {...register("day")} className="" />
+          <input
+            type="date"
+            id="day"
+            {...register("day", { required: "La date est requise." })}
+            className=""
+          />
+
+          <p className="text-red-500 font-semibold">{errors.day?.message}</p>
         </div>
 
         <div className="flex flex-col space-y-2">
@@ -48,9 +72,11 @@ export default function ExpenseForm() {
           <input
             type="number"
             id="amount"
-            {...register("amount")}
+            {...register("amount", { required: "Le montant est requise." })}
             className="border border-gray-300 p-2 rounded-md"
           />
+
+          <p className="text-red-500 font-semibold">{errors.amount?.message}</p>
         </div>
 
         <div className="flex flex-col space-y-2">
@@ -68,9 +94,15 @@ export default function ExpenseForm() {
           <input
             type="text"
             id="description"
-            {...register("description")}
+            {...register("description", {
+              required: "La description est requise.",
+            })}
             className="border border-gray-300 p-2 rounded-md"
           />
+
+          <p className="text-red-500 font-semibold">
+            {errors.description?.message}
+          </p>
         </div>
 
         <div className="flex flex-col space-y-2">
@@ -88,9 +120,19 @@ export default function ExpenseForm() {
           <input
             type="number"
             id="tvaRate"
-            {...register("tvaRate")}
+            {...register("tvaRate", {
+              required:
+                form.watch("hasTva") === true
+                  ? "Quand il y a une TVA, le taux de TVA est requis."
+                  : "",
+              onChange: (e: any) => handleTvaRate(e),
+            })}
             className="border border-gray-300 p-2 rounded-md"
           />
+
+          <p className="text-red-500 font-semibold">
+            {errors.tvaRate?.message}
+          </p>
         </div>
 
         <div className="flex flex-col space-y-2">
@@ -100,11 +142,14 @@ export default function ExpenseForm() {
             id="tvaAmount"
             {...register("tvaAmount")}
             className="border border-gray-300 p-2 rounded-md"
+            readOnly={true}
           />
         </div>
 
         <button>Submit</button>
       </form>
+
+      <DevTool control={control} />
     </div>
   );
 }
