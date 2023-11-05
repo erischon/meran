@@ -41,51 +41,72 @@ export default function ExpenseForm() {
   };
 
   return (
-    <div>
-      <h2 className="text-xl font-semibold">Ajouter une dépense</h2>
+    <div className="grid max-w-lg">
+      <h2 className="text-xl font-semibold py-5">Ajouter une dépense</h2>
 
       <form onSubmit={handleSubmit(onSubmit)} noValidate className="">
-        <div className="flex flex-col space-y-2">
-          <label htmlFor="category">Category</label>
-          <select
-            id="category"
-            {...register("category", { required: "La catégorie est requise." })}
-            className=""
-          >
-            <option value="">-- Choisir une catégorie --</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-          </select>
+        <div className="mb-3">
+          <div className="grid grid-cols-12 justify-start items-center space-x-5">
+            <label
+              htmlFor="category"
+              className="col-span-4 font-semibold tracking-wider"
+            >
+              Catégorie
+            </label>
 
-          <p className="text-red-500 font-semibold">
-            {errors.category?.message}
-          </p>
+            <select
+              id="category"
+              {...register("category", {
+                required: "La catégorie est requise.",
+              })}
+              className="col-span-8"
+            >
+              <option value="">-- Choisir une catégorie --</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </div>
+
+          <p className="text-red-500 italic">{errors.category?.message}</p>
         </div>
 
-        <div className="flex flex-col space-y-2">
-          <label htmlFor="day">Day</label>
-          <input
-            type="date"
-            id="day"
-            {...register("day", { required: "La date est requise." })}
-            className=""
-          />
+        <div className="mb-3">
+          <div className="grid grid-cols-12 justify-start items-center space-x-5">
+            <label
+              htmlFor="day"
+              className="col-span-4 font-semibold tracking-wider"
+            >
+              Day
+            </label>
 
+            <input
+              type="date"
+              id="day"
+              {...register("day", { required: "La date est requise." })}
+              className="col-span-8"
+            />
+          </div>
           <p className="text-red-500 font-semibold">{errors.day?.message}</p>
         </div>
 
-        <div className="flex flex-col space-y-2">
-          <label htmlFor="amount">Montant (ttc)</label>
-          <input
-            type="number"
-            id="amount"
-            {...register("amount", { required: "Le montant est requise." })}
-            className="border border-gray-300 p-2 rounded-md"
-          />
-
+        <div className="mb-3">
+          <div className="grid grid-cols-12 justify-start items-center space-x-5">
+            <label
+              htmlFor="amount"
+              className="col-span-4 font-semibold tracking-wider"
+            >
+              Montant (ttc)
+            </label>
+            <input
+              type="number"
+              id="amount"
+              {...register("amount", { required: "Le montant est requise." })}
+              className="col-span-8"
+            />
+          </div>
           <p className="text-red-500 font-semibold">{errors.amount?.message}</p>
         </div>
 
@@ -164,7 +185,7 @@ export default function ExpenseForm() {
           />
         </div>
 
-        <button>Submit</button>
+        <button className="bg-orange-400 py-2 px-6 my-5">Submit</button>
       </form>
     </div>
   );
