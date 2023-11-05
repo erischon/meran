@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useEffect } from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useUser } from "@clerk/nextjs";
 
@@ -20,7 +20,7 @@ type FormValues = {
 
 export default function ExpenseForm() {
   const form = useForm<FormValues>();
-  const { register, handleSubmit, formState, setValue } = form;
+  const { register, handleSubmit, formState, setValue, reset } = form;
   const { errors } = formState;
   const { user } = useUser();
 
@@ -40,6 +40,7 @@ export default function ExpenseForm() {
     data.updatedAt = new Date().toISOString();
 
     console.log("=== Form submitted", data);
+    reset();
   };
 
   const handlevatRate = (vatRate: any) => {
