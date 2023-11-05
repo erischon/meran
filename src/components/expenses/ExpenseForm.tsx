@@ -40,12 +40,112 @@ export default function ExpenseForm() {
     setValue("tvaAmount", parseFloat(tvaAmount));
   };
 
+  const formFields = [
+    {
+      name: "category",
+      label: "Catégorie",
+      inputField: () => (
+        <select
+          id="category"
+          {...register("category", {
+            required: "La catégorie est requise.",
+          })}
+          className="col-span-6"
+        >
+          <option value="">-- Choisir une catégorie --</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+        </select>
+      ),
+    },
+    {
+      name: "day",
+      label: "Day",
+      inputField: () => (
+        <input
+          type="date"
+          id="day"
+          {...register("day", { required: "La date est requise." })}
+          className="col-span-6"
+        />
+      ),
+    },
+    {
+      name: "amount",
+      label: "Montant (ttc)",
+      inputField: () => (
+        <input
+          type="number"
+          id="amount"
+          {...register("amount", { required: "Le montant est requis." })}
+          className="col-span-6"
+        />
+      ),
+    },
+    {
+      name: "hasTva",
+      label: "Vous déduisez la TVA ?",
+      inputField: () => (
+        <input
+          type="checkbox"
+          id="hasTva"
+          {...register("hasTva")}
+          className="col-span-6"
+        />
+      ),
+    },
+    {
+      name: "tvaRate",
+      label: "Taux de TVA",
+      inputField: () => <div>A fraire</div>,
+    },
+    {
+      name: "tvaAmount",
+      label: "Montant de la TVA",
+      inputField: () => <div>A fraire</div>,
+    },
+    {
+      name: "description",
+      label: "Description",
+      inputField: () => <div>A fraire</div>,
+    },
+    {
+      name: "receiptImageURL",
+      label: "Image du reçu",
+      inputField: () => <div>A fraire</div>,
+    },
+  ];
+
   return (
     <div className="grid max-w-lg">
       <h2 className="text-xl font-semibold py-5">Ajouter une dépense</h2>
 
       <form onSubmit={handleSubmit(onSubmit)} noValidate className="">
-        <div className="mb-3">
+        {formFields.map((field, k) => {
+          return (
+            <div key={k} className="mb-3">
+              <div className="grid grid-cols-12 justify-start items-center space-x-5">
+                <label
+                  htmlFor={field.name}
+                  className="col-span-6 font-semibold tracking-wider"
+                >
+                  {field.label}
+                </label>
+
+                {field.inputField()}
+
+                <p className="text-red-500 italic">
+                  {errors.category?.message}
+                </p>
+              </div>
+            </div>
+          );
+        })}
+
+        {/* <div className="mb-3">
           <div className="grid grid-cols-12 justify-start items-center space-x-5">
             <label
               htmlFor="category"
@@ -71,9 +171,9 @@ export default function ExpenseForm() {
           </div>
 
           <p className="text-red-500 italic">{errors.category?.message}</p>
-        </div>
+        </div> */}
 
-        <div className="mb-3">
+        {/* <div className="mb-3">
           <div className="grid grid-cols-12 justify-start items-center space-x-5">
             <label
               htmlFor="day"
@@ -90,9 +190,9 @@ export default function ExpenseForm() {
             />
           </div>
           <p className="text-red-500 font-semibold">{errors.day?.message}</p>
-        </div>
+        </div> */}
 
-        <div className="mb-3">
+        {/* <div className="mb-3">
           <div className="grid grid-cols-12 justify-start items-center space-x-5">
             <label
               htmlFor="amount"
@@ -108,9 +208,9 @@ export default function ExpenseForm() {
             />
           </div>
           <p className="text-red-500 font-semibold">{errors.amount?.message}</p>
-        </div>
+        </div> */}
 
-        <div className="flex items-center space-x-2 mb-2">
+        {/* <div className="flex items-center space-x-2 mb-2">
           <label htmlFor="hasTva">Vous déduisez la TVA ?</label>
           <input
             type="checkbox"
@@ -118,7 +218,7 @@ export default function ExpenseForm() {
             {...register("hasTva")}
             className="border border-gray-300 p-2 rounded-md"
           />
-        </div>
+        </div> */}
 
         <div
           className={`${
