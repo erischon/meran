@@ -74,7 +74,7 @@ export default function ExpenseForm() {
     },
     {
       name: "day",
-      label: "Day",
+      label: "Date",
       inputField: () => (
         <input
           type="date"
@@ -98,13 +98,13 @@ export default function ExpenseForm() {
     },
     {
       name: "hasVAT",
-      label: "Vous déduisez la TVA ?",
+      label: "Je déduis la TVA",
       inputField: () => (
         <input
           type="checkbox"
           id="hasVAT"
           {...register("hasVAT")}
-          className="col-span-6"
+          className="col-span-6 justify-self-start"
         />
       ),
     },
@@ -214,7 +214,9 @@ export default function ExpenseForm() {
           );
         })}
 
-        <button className="bg-orange-400 py-2 px-6 my-5">Submit</button>
+        <button className="bg-sky-300 py-2 px-6 my-5 font-semibold">
+          Submit
+        </button>
       </form>
     </div>
   );
