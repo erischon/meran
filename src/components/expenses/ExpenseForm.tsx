@@ -100,22 +100,61 @@ export default function ExpenseForm() {
     {
       name: "tvaRate",
       label: "Taux de TVA",
-      inputField: () => <div>A fraire</div>,
+      inputField: () => (
+        <input
+          type="number"
+          id="tvaRate"
+          {...register("tvaRate", {
+            required:
+              form.watch("hasTva") === true
+                ? "Quand il y a une TVA, le taux de TVA est requis."
+                : "",
+            onChange: (e: any) => handleTvaRate(e.target.value),
+          })}
+          className="col-span-6"
+        />
+      ),
+      specificClass: "form.watch('hasTva') === false ? 'hidden' : 'block'",
     },
     {
       name: "tvaAmount",
       label: "Montant de la TVA",
-      inputField: () => <div>A fraire</div>,
+      inputField: () => (
+        <input
+          type="number"
+          id="tvaAmount"
+          {...register("tvaAmount")}
+          className="col-span-6"
+          readOnly={true}
+        />
+      ),
+      specificClass: "form.watch('hasTva') === false ? 'hidden' : 'block'",
     },
     {
       name: "description",
       label: "Description",
-      inputField: () => <div>A fraire</div>,
+      inputField: () => (
+        <input
+          type="text"
+          id="description"
+          {...register("description", {
+            required: "La description est requise.",
+          })}
+          className="col-span-6"
+        />
+      ),
     },
     {
       name: "receiptImageURL",
       label: "Image du reçu",
-      inputField: () => <div>A fraire</div>,
+      inputField: () => (
+        <input
+          type="file"
+          id="receiptImageURL"
+          {...register("receiptImageURL")}
+          className="col-span-6"
+        />
+      ),
     },
   ];
 
@@ -127,7 +166,9 @@ export default function ExpenseForm() {
         {formFields.map((field, k) => {
           return (
             <div key={k} className="mb-3">
-              <div className="grid grid-cols-12 justify-start items-center space-x-5">
+              <div
+                className={`${field?.specificClass} grid grid-cols-12 justify-start items-center space-x-5`}
+              >
                 <label
                   htmlFor={field.name}
                   className="col-span-6 font-semibold tracking-wider"
@@ -136,11 +177,11 @@ export default function ExpenseForm() {
                 </label>
 
                 {field.inputField()}
-
-                <p className="text-red-500 italic">
-                  {errors.category?.message}
-                </p>
               </div>
+
+              <p className="text-red-500 italic">
+                {errors[field.name as keyof FormValues]?.message}
+              </p>
             </div>
           );
         })}
@@ -220,7 +261,7 @@ export default function ExpenseForm() {
           />
         </div> */}
 
-        <div
+        {/* <div
           className={`${
             form.watch("hasTva") === false ? "hidden" : "block"
           } flex flex-col space-y-2`}
@@ -242,9 +283,9 @@ export default function ExpenseForm() {
           <p className="text-red-500 font-semibold">
             {errors.tvaRate?.message}
           </p>
-        </div>
+        </div> */}
 
-        <div
+        {/* <div
           className={`${
             form.watch("hasTva") === false ? "hidden" : "block"
           } flex flex-col space-y-2`}
@@ -257,9 +298,9 @@ export default function ExpenseForm() {
             className="border border-gray-300 p-2 rounded-md"
             readOnly={true}
           />
-        </div>
+        </div> */}
 
-        <div className="flex flex-col space-y-2">
+        {/* <div className="flex flex-col space-y-2">
           <label htmlFor="description">description</label>
           <input
             type="text"
@@ -273,9 +314,9 @@ export default function ExpenseForm() {
           <p className="text-red-500 font-semibold">
             {errors.description?.message}
           </p>
-        </div>
+        </div> */}
 
-        <div className="flex flex-col space-y-2">
+        {/* <div className="flex flex-col space-y-2">
           <label htmlFor="receiptImageURL">receiptImageURL</label>
           <input
             type="file"
@@ -283,7 +324,7 @@ export default function ExpenseForm() {
             {...register("receiptImageURL")}
             className="border border-gray-300 p-2 rounded-md"
           />
-        </div>
+        </div> */}
 
         <button className="bg-orange-400 py-2 px-6 my-5">Submit</button>
       </form>
