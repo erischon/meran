@@ -23,15 +23,21 @@ export default function ExpenseForm() {
     setValue("hasTva", false);
   }, []);
 
+  useEffect(() => {
+    handleTvaRate(form.watch("tvaRate"));
+  }, [form.watch("amount")]);
+
   const onSubmit = (data: FormValues) => {
     console.log("=== Form submitted", data);
   };
 
-  const handleTvaRate = (e: any) => {
-    setValue(
-      "tvaAmount",
-      form.watch("amount") - form.watch("amount") / (1 + e.target.value / 100)
-    );
+  const handleTvaRate = (tvaRate: any) => {
+    const tvaAmount = (
+      form.watch("amount") -
+      form.watch("amount") / (1 + tvaRate / 100)
+    ).toFixed(2);
+
+    setValue("tvaAmount", parseFloat(tvaAmount));
   };
 
   return (
@@ -107,7 +113,7 @@ export default function ExpenseForm() {
                 form.watch("hasTva") === true
                   ? "Quand il y a une TVA, le taux de TVA est requis."
                   : "",
-              onChange: (e: any) => handleTvaRate(e),
+              onChange: (e: any) => handleTvaRate(e.target.value),
             })}
             className="border border-gray-300 p-2 rounded-md"
           />
