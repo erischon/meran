@@ -130,7 +130,7 @@ export default function ExpenseForm() {
     },
     {
       name: "vatAmount",
-      label: "Montant de la TVA",
+      label: "(montant de la TVA)",
       inputField: () => (
         <input
           type="number"
