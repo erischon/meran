@@ -1,191 +1,223 @@
 "use client";
 
-import { use, useEffect } from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { useUser } from "@clerk/nextjs";
 
 type FormValues = {
   category: string;
   day: string;
   amount: number;
-  hasTva: boolean;
+  hasVAT: boolean;
   description: string;
   receiptImageURL: string;
-  tvaRate: number;
-  tvaAmount: number;
+  vatRate: number;
+  vatAmount: number;
+  userId: string;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export default function ExpenseForm() {
   const form = useForm<FormValues>();
-  const { register, handleSubmit, formState, setValue } = form;
+  const { register, handleSubmit, formState, setValue, reset } = form;
   const { errors } = formState;
+  const { user } = useUser();
 
   useEffect(() => {
-    setValue("hasTva", false);
+    setValue("hasVAT", false);
   }, []);
 
   useEffect(() => {
-    handleTvaRate(form.watch("tvaRate"));
+    handlevatRate(form.watch("vatRate"));
   }, [form.watch("amount")]);
 
   const onSubmit = (data: FormValues) => {
+    data.userId = user?.id as string;
+
+    data.day = new Date(data.day).toISOString();
+    data.createdAt = new Date().toISOString();
+    data.updatedAt = new Date().toISOString();
+
     console.log("=== Form submitted", data);
+    reset();
   };
 
-  const handleTvaRate = (tvaRate: any) => {
-    const tvaAmount = (
+  const handlevatRate = (vatRate: any) => {
+    const vatAmount = (
       form.watch("amount") -
-      form.watch("amount") / (1 + tvaRate / 100)
+      form.watch("amount") / (1 + vatRate / 100)
     ).toFixed(2);
 
-    setValue("tvaAmount", parseFloat(tvaAmount));
+    setValue("vatAmount", parseFloat(vatAmount));
   };
+
+  const formFields = [
+    {
+      name: "category",
+      label: "Catégorie",
+      inputField: () => (
+        <select
+          id="category"
+          {...register("category", {
+            required: "La catégorie est requise.",
+          })}
+          className="col-span-6"
+        >
+          <option value="">-- Choisir une catégorie --</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+        </select>
+      ),
+    },
+    {
+      name: "day",
+      label: "Date",
+      inputField: () => (
+        <input
+          type="date"
+          id="day"
+          {...register("day", { required: "La date est requise." })}
+          className="col-span-6"
+        />
+      ),
+    },
+    {
+      name: "amount",
+      label: "Montant (ttc)",
+      inputField: () => (
+        <input
+          type="number"
+          id="amount"
+          {...register("amount", { required: "Le montant est requis." })}
+          className="col-span-6"
+        />
+      ),
+    },
+    {
+      name: "hasVAT",
+      label: "Je déduis la TVA",
+      inputField: () => (
+        <input
+          type="checkbox"
+          id="hasVAT"
+          {...register("hasVAT")}
+          className="col-span-6 justify-self-start"
+        />
+      ),
+    },
+    {
+      name: "vatRate",
+      label: "Taux de TVA",
+      inputField: () => (
+        <input
+          type="number"
+          id="vatRate"
+          {...register("vatRate", {
+            required:
+              form.watch("hasVAT") === true
+                ? "Quand il y a une TVA, le taux de TVA est requis."
+                : "",
+            onChange: (e: any) => handlevatRate(e.target.value),
+          })}
+          className="col-span-6"
+        />
+      ),
+      specificClass: true,
+    },
+    {
+      name: "vatAmount",
+      label: "(montant de la TVA)",
+      inputField: () => (
+        <input
+          type="number"
+          id="vatAmount"
+          {...register("vatAmount")}
+          className="col-span-6"
+          readOnly={true}
+        />
+      ),
+      specificClass: true,
+    },
+    {
+      name: "description",
+      label: "Description",
+      inputField: () => (
+        <input
+          type="text"
+          id="description"
+          {...register("description", {
+            required: "La description est requise.",
+          })}
+          className="col-span-6"
+        />
+      ),
+    },
+    {
+      name: "receiptImageURL",
+      label: "Image du reçu",
+      inputField: () => (
+        <input
+          type="file"
+          id="receiptImageURL"
+          {...register("receiptImageURL")}
+          className="col-span-6"
+        />
+      ),
+    },
+  ];
 
   return (
     <div className="grid max-w-lg">
       <h2 className="text-xl font-semibold py-5">Ajouter une dépense</h2>
 
       <form onSubmit={handleSubmit(onSubmit)} noValidate className="">
-        <div className="mb-3">
-          <div className="grid grid-cols-12 justify-start items-center space-x-5">
-            <label
-              htmlFor="category"
-              className="col-span-4 font-semibold tracking-wider"
-            >
-              Catégorie
-            </label>
+        {formFields.map((field, k) => {
+          return (
+            <div key={k} className="mb-3">
+              {!field.specificClass ? (
+                <div
+                  className={`grid grid-cols-12 justify-start items-center space-x-5`}
+                >
+                  <label
+                    htmlFor={field.name}
+                    className="col-span-6 font-semibold tracking-wider"
+                  >
+                    {field.label}
+                  </label>
 
-            <select
-              id="category"
-              {...register("category", {
-                required: "La catégorie est requise.",
-              })}
-              className="col-span-8"
-            >
-              <option value="">-- Choisir une catégorie --</option>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-            </select>
-          </div>
+                  {field.inputField()}
+                </div>
+              ) : (
+                <div
+                  className={`${
+                    form.watch("hasVAT") === false ? "hidden" : "block"
+                  } grid grid-cols-12 justify-start items-center space-x-5`}
+                >
+                  <label
+                    htmlFor={field.name}
+                    className="col-span-6 font-semibold tracking-wider"
+                  >
+                    {field.label}
+                  </label>
 
-          <p className="text-red-500 italic">{errors.category?.message}</p>
-        </div>
+                  {field.inputField()}
+                </div>
+              )}
 
-        <div className="mb-3">
-          <div className="grid grid-cols-12 justify-start items-center space-x-5">
-            <label
-              htmlFor="day"
-              className="col-span-4 font-semibold tracking-wider"
-            >
-              Day
-            </label>
+              <p className="text-red-500 italic">
+                {errors[field.name as keyof FormValues]?.message}
+              </p>
+            </div>
+          );
+        })}
 
-            <input
-              type="date"
-              id="day"
-              {...register("day", { required: "La date est requise." })}
-              className="col-span-8"
-            />
-          </div>
-          <p className="text-red-500 font-semibold">{errors.day?.message}</p>
-        </div>
-
-        <div className="mb-3">
-          <div className="grid grid-cols-12 justify-start items-center space-x-5">
-            <label
-              htmlFor="amount"
-              className="col-span-4 font-semibold tracking-wider"
-            >
-              Montant (ttc)
-            </label>
-            <input
-              type="number"
-              id="amount"
-              {...register("amount", { required: "Le montant est requise." })}
-              className="col-span-8"
-            />
-          </div>
-          <p className="text-red-500 font-semibold">{errors.amount?.message}</p>
-        </div>
-
-        <div className="flex items-center space-x-2 mb-2">
-          <label htmlFor="hasTva">Vous déduisez la TVA ?</label>
-          <input
-            type="checkbox"
-            id="hasTva"
-            {...register("hasTva")}
-            className="border border-gray-300 p-2 rounded-md"
-          />
-        </div>
-
-        <div
-          className={`${
-            form.watch("hasTva") === false ? "hidden" : "block"
-          } flex flex-col space-y-2`}
-        >
-          <label htmlFor="tvaRate">tvaRate</label>
-          <input
-            type="number"
-            id="tvaRate"
-            {...register("tvaRate", {
-              required:
-                form.watch("hasTva") === true
-                  ? "Quand il y a une TVA, le taux de TVA est requis."
-                  : "",
-              onChange: (e: any) => handleTvaRate(e.target.value),
-            })}
-            className="border border-gray-300 p-2 rounded-md"
-          />
-
-          <p className="text-red-500 font-semibold">
-            {errors.tvaRate?.message}
-          </p>
-        </div>
-
-        <div
-          className={`${
-            form.watch("hasTva") === false ? "hidden" : "block"
-          } flex flex-col space-y-2`}
-        >
-          <label htmlFor="tvaAmount">tvaAmount</label>
-          <input
-            type="number"
-            id="tvaAmount"
-            {...register("tvaAmount")}
-            className="border border-gray-300 p-2 rounded-md"
-            readOnly={true}
-          />
-        </div>
-
-        <div className="flex flex-col space-y-2">
-          <label htmlFor="description">description</label>
-          <input
-            type="text"
-            id="description"
-            {...register("description", {
-              required: "La description est requise.",
-            })}
-            className="border border-gray-300 p-2 rounded-md"
-          />
-
-          <p className="text-red-500 font-semibold">
-            {errors.description?.message}
-          </p>
-        </div>
-
-        <div className="flex flex-col space-y-2">
-          <label htmlFor="receiptImageURL">receiptImageURL</label>
-          <input
-            type="file"
-            id="receiptImageURL"
-            {...register("receiptImageURL")}
-            className="border border-gray-300 p-2 rounded-md"
-          />
-        </div>
-
-        <button className="bg-orange-400 py-2 px-6 my-5">Submit</button>
+        <button className="bg-sky-300 py-2 px-6 my-5 font-semibold">
+          Submit
+        </button>
       </form>
     </div>
   );
