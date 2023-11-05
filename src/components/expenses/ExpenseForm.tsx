@@ -158,7 +158,7 @@ export default function ExpenseForm() {
     },
     {
       name: "receiptImageURL",
-      label: "Image du reçu",
+      label: "Photo du reçu",
       inputField: () => (
         <input
           type="file"
