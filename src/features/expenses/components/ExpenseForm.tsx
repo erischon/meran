@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useUser } from "@clerk/nextjs";
+
 import { addExpense } from "@/features/expenses/utils/addExpense";
 
 type FormValues = {
@@ -50,7 +51,7 @@ export default function ExpenseForm() {
 
     addExpense(data);
 
-    // reset();
+    reset();
   };
 
   const formFields = [
