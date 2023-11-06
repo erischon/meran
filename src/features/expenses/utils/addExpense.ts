@@ -1,8 +1,8 @@
 export async function addExpense(expense: any): Promise<void> {
-  const endpoint = `http://localhost:3000/api/expenses`;
+  const endpoint = `${process.env.NEXT_PUBLIC_API_URL}/expenses`;
 
   try {
-    const res = await fetch("http://localhost:3000/api/expenses", {
+    const res = await fetch(endpoint, {
       method: "POST",
       headers: {
         "Content-type": "application/json",
