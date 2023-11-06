@@ -1,4 +1,6 @@
 export async function addExpense(expense: any): Promise<void> {
+  const endpoint = `http://localhost:3000/api/expenses`;
+
   try {
     const res = await fetch("http://localhost:3000/api/expenses", {
       method: "POST",
