@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useUser } from "@clerk/nextjs";
+import { addExpense } from "@/features/expenses/utils/addExpense";
 
 type FormValues = {
   category: string;
@@ -10,7 +11,6 @@ type FormValues = {
   amount: number;
   hasVAT: boolean;
   description: string;
-  receiptImageURL: string;
   vatRate: number;
   vatAmount: number;
   userId: string;
@@ -32,17 +32,6 @@ export default function ExpenseForm() {
     handlevatRate(form.watch("vatRate"));
   }, [form.watch("amount")]);
 
-  const onSubmit = (data: FormValues) => {
-    data.userId = user?.id as string;
-
-    data.day = new Date(data.day).toISOString();
-    data.createdAt = new Date().toISOString();
-    data.updatedAt = new Date().toISOString();
-
-    console.log("=== Form submitted", data);
-    reset();
-  };
-
   const handlevatRate = (vatRate: any) => {
     const vatAmount = (
       form.watch("amount") -
@@ -50,6 +39,18 @@ export default function ExpenseForm() {
     ).toFixed(2);
 
     setValue("vatAmount", parseFloat(vatAmount));
+  };
+
+  const onSubmit = (data: FormValues) => {
+    data.userId = user?.id as string;
+
+    data.day = new Date(data.day).toISOString();
+    data.createdAt = new Date().toISOString();
+    data.updatedAt = new Date().toISOString();
+
+    addExpense(data);
+
+    reset();
   };
 
   const formFields = [
@@ -156,18 +157,18 @@ export default function ExpenseForm() {
         />
       ),
     },
-    {
-      name: "receiptImageURL",
-      label: "Photo du reçu",
-      inputField: () => (
-        <input
-          type="file"
-          id="receiptImageURL"
-          {...register("receiptImageURL")}
-          className="col-span-6"
-        />
-      ),
-    },
+    // {
+    //   name: "receiptImageURL",
+    //   label: "Photo du reçu",
+    //   inputField: () => (
+    //     <input
+    //       type="file"
+    //       id="receiptImageURL"
+    //       {...register("receiptImageURL")}
+    //       className="col-span-6"
+    //     />
+    //   ),
+    // },
   ];
 
   return (
