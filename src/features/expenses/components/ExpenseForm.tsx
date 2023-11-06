@@ -50,7 +50,7 @@ export default function ExpenseForm() {
 
     addExpense(data);
 
-    reset();
+    // reset();
   };
 
   const formFields = [
