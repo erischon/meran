@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { useUser } from "@clerk/nextjs";
 
 import { addExpense } from "@/features/expenses/utils/addExpense";
+import { category } from "@/features/expenses/data/category";
 
 type FormValues = {
   category: string;
@@ -67,11 +68,11 @@ export default function ExpenseForm() {
           className="col-span-6"
         >
           <option value="">-- Choisir une catégorie --</option>
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-          <option value="5">5</option>
+          {category.map((cat) => (
+            <option key={cat.id} value={cat.id}>
+              {cat.name}
+            </option>
+          ))}
         </select>
       ),
     },
