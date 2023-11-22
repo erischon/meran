@@ -11,9 +11,8 @@ export default function ExpensesList() {
     async function getData() {
       const data = await getExpenses();
 
-      console.log("=== Data", data.expenses);
-
       if (!data) return console.log("No expenses found");
+      console.log("=== Data", data?.expenses);
 
       setExpenses(data.expenses);
     }
